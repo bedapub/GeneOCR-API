@@ -17,3 +17,7 @@ class ImageAnalyzationResponseModel(BaseModel):
         ...,
         description='Analyzed text from image'
     )
+    format: str = Field(
+        ...,
+        description='The format of response'
+    )

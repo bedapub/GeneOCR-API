@@ -1,4 +1,5 @@
 
+from typing import List
 from fastapi.routing import APIRouter
 from fastapi import status
 from PIL import Image
@@ -22,10 +23,16 @@ pytesseract.pytesseract.tesseract_cmd = r'C:\Users\geserp\Anaconda3\Library\bin\
     },
 
 )
-def image_analyzation_endpoint(file: bytes = File(...)):
+def image_analyzation_endpoint(file: bytes = File(...), format: str = 'string'):
     try:
         image = Image.open(io.BytesIO(file))
         text = pytesseract.image_to_string(image, lang='eng')
-        return ImageAnalyzationResponseModel(text=text, status="success")
+        if format == 'string':
+            return ImageAnalyzationResponseModel(text=text, status="success", format="string")
+        if format == 'array':
+            splittedText = text.split("\n")
+            splittedText = list(filter(lambda line: line.strip(), splittedText))
+            return ImageAnalyzationResponseModel(text=splittedText, status="success", format="array")
+        return ImageAnalyzationResponseModel(text=text, status="success", format="string")
     except Exception as e:
         return ImageAnalyzationResponseModel(status="failed", text=e)
