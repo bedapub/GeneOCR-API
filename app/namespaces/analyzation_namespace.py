@@ -4,11 +4,11 @@ from fastapi.routing import APIRouter
 from fastapi import status
 from PIL import Image
 import pytesseract
-from fastapi import FastAPI, File, UploadFile
+from fastapi import File
 import io
 
 from config.api_configs import COMMON_API_RESPONSE_MODELS
-from schemas.image_analyzation_schema import ImageAnalyzationRequestModel, ImageAnalyzationResponseModel
+from schemas.image_analyzation_schema import ImageAnalyzationResponseModel
 
 analyzation_namespace = APIRouter(prefix='/analyze')
 
