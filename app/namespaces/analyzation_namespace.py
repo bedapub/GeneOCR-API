@@ -1,14 +1,22 @@
 
 from typing import List
+
+from PIL.ExifTags import TAGS
 from fastapi.routing import APIRouter
 from fastapi import status
 from PIL import Image
 import pytesseract
+from pytesseract import Output
 from fastapi import File
 import io
+import cv2
+import numpy as np
+from starlette.responses import StreamingResponse
+
 
 from config.api_configs import COMMON_API_RESPONSE_MODELS
 from schemas.image_analyzation_schema import ImageAnalyzationResponseModel
+from helpers.text_area_detecting import detect_text_areas
 
 analyzation_namespace = APIRouter(prefix='/analyze')
 
@@ -21,18 +29,38 @@ pytesseract.pytesseract.tesseract_cmd = r'C:\Users\geserp\Anaconda3\Library\bin\
     responses={
         **COMMON_API_RESPONSE_MODELS
     },
-
 )
 def image_analyzation_endpoint(file: bytes = File(...), format: str = 'string'):
     try:
-        image = Image.open(io.BytesIO(file))
-        text = pytesseract.image_to_string(image, lang='eng')
+        img = cv2.imdecode(np.frombuffer(io.BytesIO(file).getbuffer(), np.uint8), -1)
+        img = cv2.resize(img, None, fx=1.3, fy=1.3, interpolation=cv2.INTER_CUBIC)
+        img = cv2.cvtColor(img, cv2.COLOR_BGR2GRAY)
+        img = cv2.GaussianBlur(img, (5, 5), 0)
+        text = pytesseract.image_to_string(img, lang='eng')
         if format == 'string':
             return ImageAnalyzationResponseModel(text=text, status="success", format="string")
         if format == 'array':
-            splittedText = text.split("\n")
-            splittedText = list(filter(lambda line: line.strip(), splittedText))
-            return ImageAnalyzationResponseModel(text=splittedText, status="success", format="array")
+            split_text = text.split("\n")
+            split_text = list(filter(lambda line: line.strip(), split_text))
+            return ImageAnalyzationResponseModel(text=split_text, status="success", format="array")
         return ImageAnalyzationResponseModel(text=text, status="success", format="string")
     except Exception as e:
         return ImageAnalyzationResponseModel(status="failed", text=e)
+    
+    
+@analyzation_namespace.post(
+    '/text-area',
+    description='Recognize text areas in image',
+    status_code=status.HTTP_200_OK,
+    responses={
+        **COMMON_API_RESPONSE_MODELS
+    },
+
+)
+def image_analyzation_endpoint(file: bytes = File(...)):
+    img = cv2.imdecode(np.frombuffer(io.BytesIO(file).getbuffer(), np.uint8), -1)
+    img = detect_text_areas(img)
+    res, im_png = cv2.imencode(".png", img)
+    return StreamingResponse(io.BytesIO(im_png.tobytes()), media_type="image/png")
+
+    #print(cv2.text_TextDetectorCNN.detect(n))

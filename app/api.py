@@ -4,6 +4,7 @@ from fastapi import FastAPI, APIRouter
 from namespaces.health_namespace import health_namespace
 from namespaces.analyzation_namespace import analyzation_namespace
 from namespaces.wordspelling_check_namespaces import wordspelling_check_namespace
+from namespaces.image_helper_namespace import image_helper_namespace
 
 _API_TAGS_METADATA = [
     {
@@ -17,6 +18,10 @@ _API_TAGS_METADATA = [
     {
         'name': 'spelling',
         'description': 'Check word spelling'
+    },
+    {
+        'name': 'image-helper',
+        'description': 'Helper functions for images'
     }
 ]
 
@@ -27,8 +32,7 @@ def init_api(app: FastAPI):
     api_v1.include_router(health_namespace, tags=['health'])
     api_v1.include_router(analyzation_namespace, tags=['analyze'])
     api_v1.include_router(wordspelling_check_namespace, tags=['spelling'])
-    """ api_v1.include_router(similarity_scoring_namespace, tags=['similarity scoring'])
-    api_v1.include_router(substructure_namespace, tags=['substructure']) """
+    api_v1.include_router(image_helper_namespace, tags=['image-helper'])
     app.include_router(api_v1)
     _include_error_handlers(app)
 

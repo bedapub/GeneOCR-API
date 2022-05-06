@@ -4,3 +4,9 @@ uvicorn==0.15.0
 loguru==0.6.0
 pytesseract==0.3.9
 spellchecker==0.4
+opencv-python==4.5.5.64
+opencv-contrib-python==4.5.5.64
+opencv-contrib-python-headless==4.5.5.64
+imutils==0.5.4
+tensorflow==2.8.0
+tensorflow-hub==0.12.0
