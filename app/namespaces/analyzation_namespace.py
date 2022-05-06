@@ -47,7 +47,7 @@ def image_analyzation_endpoint(file: bytes = File(...), response_format: str = '
             return ImageAnalyzationResponseModel(text=split_text, status="success", format="array")
         return ImageAnalyzationResponseModel(text=text, status="success", format="string")
     except Exception as e:
-        return ImageAnalyzationResponseModel(status="failed", text=e)
+        return ImageAnalyzationResponseModel(status="failed", text=e, format=response_format)
     
     
 @analyzation_namespace.post(
