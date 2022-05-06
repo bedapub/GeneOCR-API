@@ -17,6 +17,7 @@ from starlette.responses import StreamingResponse
 from config.api_configs import COMMON_API_RESPONSE_MODELS
 from schemas.image_analyzation_schema import ImageAnalyzationResponseModel
 from helpers.text_area_detecting import detect_text_areas
+from helpers.rotate import rotate_image
 
 analyzation_namespace = APIRouter(prefix='/analyze')
 
@@ -33,6 +34,7 @@ pytesseract.pytesseract.tesseract_cmd = r'C:\Users\geserp\Anaconda3\Library\bin\
 def image_analyzation_endpoint(file: bytes = File(...), format: str = 'string'):
     try:
         img = cv2.imdecode(np.frombuffer(io.BytesIO(file).getbuffer(), np.uint8), -1)
+        img = rotate_image(img)
         img = cv2.resize(img, None, fx=1.3, fy=1.3, interpolation=cv2.INTER_CUBIC)
         img = cv2.cvtColor(img, cv2.COLOR_BGR2GRAY)
         img = cv2.GaussianBlur(img, (5, 5), 0)
