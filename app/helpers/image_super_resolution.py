@@ -71,20 +71,5 @@ def plot_image(image, title=""):
     plt.axis("off")
     plt.title(title)
 
-"""
-hr_image = preprocess_image(IMAGE_PATH)
-
-
-# Plotting Original Resolution image
-#plot_image(tf.squeeze(hr_image), title="Original Image")
-#save_image(tf.squeeze(hr_image), filename="Original Image")
-
-start = time.time()
-fake_image = model(hr_image)
-fake_image = tf.squeeze(fake_image)
-print("Time Taken: %f" % (time.time() - start))
-
-plot_image(tf.squeeze(fake_image), title="Super Resolution")
-save_image(tf.squeeze(fake_image), filename="Super Resolution")"""
 
 

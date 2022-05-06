@@ -31,7 +31,7 @@ pytesseract.pytesseract.tesseract_cmd = r'C:\Users\geserp\Anaconda3\Library\bin\
         **COMMON_API_RESPONSE_MODELS
     },
 )
-def image_analyzation_endpoint(file: bytes = File(...), format: str = 'string'):
+def image_analyzation_endpoint(file: bytes = File(...), response_format: str = 'string'):
     try:
         img = cv2.imdecode(np.frombuffer(io.BytesIO(file).getbuffer(), np.uint8), -1)
         img = rotate_image(img)
@@ -39,9 +39,9 @@ def image_analyzation_endpoint(file: bytes = File(...), format: str = 'string'):
         img = cv2.cvtColor(img, cv2.COLOR_BGR2GRAY)
         img = cv2.GaussianBlur(img, (5, 5), 0)
         text = pytesseract.image_to_string(img, lang='eng')
-        if format == 'string':
+        if response_format == 'string':
             return ImageAnalyzationResponseModel(text=text, status="success", format="string")
-        if format == 'array':
+        if response_format == 'array':
             split_text = text.split("\n")
             split_text = list(filter(lambda line: line.strip(), split_text))
             return ImageAnalyzationResponseModel(text=split_text, status="success", format="array")
@@ -64,5 +64,3 @@ def image_analyzation_endpoint(file: bytes = File(...)):
     img = detect_text_areas(img)
     res, im_png = cv2.imencode(".png", img)
     return StreamingResponse(io.BytesIO(im_png.tobytes()), media_type="image/png")
-
-    #print(cv2.text_TextDetectorCNN.detect(n))
