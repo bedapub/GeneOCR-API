@@ -34,8 +34,16 @@ pytesseract.pytesseract.tesseract_cmd = r'C:\Users\geserp\Anaconda3\Library\bin\
 def image_analyzation_endpoint(file: bytes = File(...), response_format: str = 'string'):
     try:
         img = cv2.imdecode(np.frombuffer(io.BytesIO(file).getbuffer(), np.uint8), -1)
-        img = rotate_image(img)
-        img = cv2.resize(img, None, fx=1.3, fy=1.3, interpolation=cv2.INTER_CUBIC)
+        h, w, c = img.shape
+        if min((h, w)) < 300:
+            scale_factor = float(350 / min((h, w))) * 1.5
+            img = cv2.resize(img, None, fx=scale_factor, fy=scale_factor, interpolation=cv2.INTER_CUBIC)
+        else:
+            img = cv2.resize(img, None, fx=1.3, fy=1.3, interpolation=cv2.INTER_CUBIC)
+        try:
+            img = rotate_image(img)
+        except Exception as e:
+            pass
         img = cv2.cvtColor(img, cv2.COLOR_BGR2GRAY)
         img = cv2.GaussianBlur(img, (5, 5), 0)
         text = pytesseract.image_to_string(img, lang='eng')
@@ -47,6 +55,13 @@ def image_analyzation_endpoint(file: bytes = File(...), response_format: str = '
             return ImageAnalyzationResponseModel(text=split_text, status="success", format="array")
         return ImageAnalyzationResponseModel(text=text, status="success", format="string")
     except Exception as e:
+        print(e)
+        img = cv2.imdecode(np.frombuffer(io.BytesIO(file).getbuffer(), np.uint8), -1)
+        h, w, c = img.shape
+        print('width:  ', w)
+        print('height: ', h)
+        t = (h, w)
+        print(min(t))
         return ImageAnalyzationResponseModel(status="failed", text=e, format=response_format)
     
     
