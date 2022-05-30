@@ -8,7 +8,8 @@ from config.api_configs import COMMON_API_RESPONSE_MODELS
 
 from helpers.rotate import rotate_image
 
-from helpers.image_super_resolution import preprocess_image, model_image, save_image
+"""from helpers.image_super_resolution import preprocess_image, model_image, save_image
+"""
 from helpers.image_fast_sharpener import pil_fast_sharpener, cv2_kernel_fast_sharpener
 
 image_helper_namespace = APIRouter(prefix='/image-helper')
@@ -29,7 +30,7 @@ def image_rotation_endpoint(file: bytes = File(...)):
     res, im_png = cv2.imencode(".png", rotated)
     return StreamingResponse(io.BytesIO(im_png.tobytes()), media_type="image/png")
 
-
+"""
 @image_helper_namespace.post(
     '/sharpen_slow',
     description='Sharpen image with tenserflow model',
@@ -45,7 +46,7 @@ def image_sharpen_slow_endpoint(file: bytes = File(...)):
     res, im_png = cv2.imencode(".png", image)
     return StreamingResponse(io.BytesIO(im_png.tobytes()), media_type="image/png")
 
-
+"""
 @image_helper_namespace.post(
     '/sharpen_fast',
     description='Sharpen image with tenserflow model',
