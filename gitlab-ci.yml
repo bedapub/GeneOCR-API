@@ -1,0 +1,26 @@
+stages:
+  - build
+
+variables:
+  DOCKER_IMAGE_NAME: "$CI_REGISTRY_IMAGE"
+  DOCKER_IMAGE_TAG: "$CI_COMMIT_SHORT_SHA"
+  DOCKERFILE: "Dockerfile"
+  EXTRA_DOCKER_BUILD_ARGS: ""
+
+
+docker image:
+  stage: build
+  image: docker:20
+  before_script:
+    - echo "Building docker image $CI_REGISTRY_IMAGE:$DOCKER_IMAGE_TAG"
+    - mkdir -p $HOME/.docker
+    - echo $DOCKER_AUTH_CONFIG > $HOME/.docker/config.json
+    - echo "$CI_REGISTRY_PASSWORD" | docker login -u "$CI_REGISTRY_USER" "$CI_REGISTRY" --password-stdin
+  script:
+    - docker build --pull -f ${DOCKERFILE} --build-arg PROJECT_VERSION=${CI_COMMIT_SHORT_SHA} --build-arg GIT_BRANCH=${CI_COMMIT_REF_NAME} -t "$CI_REGISTRY_IMAGE:$DOCKER_IMAGE_TAG" ${EXTRA_DOCKER_BUILD_ARGS} .
+    - docker push "$CI_REGISTRY_IMAGE:$DOCKER_IMAGE_TAG"
+    - docker tag "$CI_REGISTRY_IMAGE:$DOCKER_IMAGE_TAG" "$CI_REGISTRY_IMAGE:latest"
+    - docker push "$CI_REGISTRY_IMAGE:latest"
+  after_script:
+    - docker logout "$CI_REGISTRY" || true
+    - docker logout index.docker.io || true
