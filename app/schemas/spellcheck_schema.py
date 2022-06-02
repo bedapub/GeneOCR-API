@@ -7,9 +7,9 @@ class SpellCheckRequestModel(BaseModel):
         ...,
         description='Array of words that will be check for correct spelling'
     )
-    options: Any = Field(
-        None,
-        description='Options for spell checking'
+    type: str = Field(
+        ...,
+        description='Gene type for spell checking'
     )
 
 class SpellCheckModel(BaseModel):

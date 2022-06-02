@@ -28,12 +28,12 @@ for file in files:
 def get_spelling_endpoint(input_value: SpellCheckRequestModel):
     result: List[SpellCheckModel] = []
     for gene in input_value.value:
-        if not spell[gene]:
-            candidates = spell.candidates(gene) 
+        if not spell_checker[input_value.type][gene]:
+            candidates = spell_checker[input_value.type].candidates(gene)
             if len(candidates) == 1 and next(iter(candidates)) == gene:
                 result.append(SpellCheckModel(initial_word=gene, gene_exists=False))
             else:
-                correction = spell.correction(gene)
+                correction = spell_checker[input_value.type].correction(gene)
                 result.append(SpellCheckModel(initial_word=gene, gene_exists=False, best_canditate=correction, suggestions=candidates))
         else:
             result.append(SpellCheckModel(initial_word=gene, gene_exists=True))
@@ -45,9 +45,9 @@ def get_spelling_endpoint(input_value: SpellCheckRequestModel):
     description='Check if gene or other is valid',
     status_code=status.HTTP_200_OK,
 )
-def get_spelling_endpoint(word: str, type: str = 'gene'):
+def get_spelling_endpoint(word: str, type: str):
     return {
-        "valid": bool(spell[word]),
+        "valid": bool(spell_checker[type][word]),
         "initial_word": word
     }
 
