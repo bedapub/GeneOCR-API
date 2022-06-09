@@ -56,12 +56,6 @@ def image_analyzation_endpoint(file: bytes = File(...), response_format: str = '
         return ImageAnalyzationResponseModel(text=text, status="success", format="string")
     except Exception as e:
         print(e)
-        img = cv2.imdecode(np.frombuffer(io.BytesIO(file).getbuffer(), np.uint8), -1)
-        h, w, c = img.shape
-        print('width:  ', w)
-        print('height: ', h)
-        t = (h, w)
-        print(min(t))
         return ImageAnalyzationResponseModel(status="failed", text=e, format=response_format)
     
     

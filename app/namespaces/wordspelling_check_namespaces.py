@@ -8,9 +8,6 @@ from os.path import isfile, join
 
 wordspelling_check_namespace = APIRouter(prefix='/spelling')
 
-spell = SpellChecker(language=None, case_sensitive=True)
-spell.word_frequency.load_text_file('namespaces/dictionary.txt')
-
 files = [f for f in listdir('dictionary') if isfile(join('dictionary', f))]
 
 spell_checker = {}
