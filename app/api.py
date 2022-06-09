@@ -28,7 +28,7 @@ _API_TAGS_METADATA = [
 
 def init_api(app: FastAPI):
     app.openapi_tags = _API_TAGS_METADATA
-    api_v1 = APIRouter(prefix='/v1')
+    api_v1 = APIRouter(prefix='/api')
     api_v1.include_router(health_namespace, tags=['health'])
     api_v1.include_router(analyzation_namespace, tags=['analyze'])
     api_v1.include_router(wordspelling_check_namespace, tags=['spelling'])

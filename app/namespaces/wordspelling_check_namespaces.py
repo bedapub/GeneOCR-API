@@ -50,10 +50,10 @@ def get_spelling_endpoint(word: str, type: str):
 
 
 @wordspelling_check_namespace.get(
-    '/get-gene-types',
-    description='Get a list of all possible gene types',
+    '/get-gene-organisms',
+    description='Get a list of all possible gene organisms',
     status_code=status.HTTP_200_OK,
 )
-def get_all_gene_types():
+def get_all_gene_organisms():
     file_names = [file.split('.')[0] for file in files]
     return file_names
