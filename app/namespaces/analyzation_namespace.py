@@ -9,6 +9,7 @@ import pytesseract
 from pytesseract import Output
 from fastapi import File
 import io
+import os
 import cv2
 import numpy as np
 from starlette.responses import StreamingResponse
@@ -21,7 +22,8 @@ from helpers.rotate import rotate_image
 
 analyzation_namespace = APIRouter(prefix='/analyze')
 
-pytesseract.pytesseract.tesseract_cmd = r'C:\Users\geserp\Anaconda3\Library\bin\tesseract.exe'
+if os.name == 'nt':
+    pytesseract.pytesseract.tesseract_cmd = r'C:\Users\geserp\Anaconda3\Library\bin\tesseract.exe'
 
 @analyzation_namespace.post(
     '/image',

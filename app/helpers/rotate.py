@@ -2,8 +2,10 @@ import cv2
 from pytesseract import Output
 import pytesseract
 import imutils
+import os
 
-pytesseract.pytesseract.tesseract_cmd = r'C:\Users\geserp\Anaconda3\Library\bin\tesseract.exe'
+if os.name == 'nt':
+    pytesseract.pytesseract.tesseract_cmd = r'C:\Users\geserp\Anaconda3\Library\bin\tesseract.exe'
 
 
 def rotate_image(image):
