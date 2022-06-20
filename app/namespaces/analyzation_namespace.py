@@ -23,7 +23,7 @@ from helpers.rotate import rotate_image
 analyzation_namespace = APIRouter(prefix='/analyze')
 
 if os.name == 'nt':
-    pytesseract.pytesseract.tesseract_cmd = r'C:\Users\geserp\Anaconda3\Library\bin\tesseract.exe'
+    pytesseract.pytesseract.tesseract_cmd = pytesseract.pytesseract.tesseract_cmd = 'C:/Program Files (x86)/Tesseract-OCR/tesseract.exe'
 
 @analyzation_namespace.post(
     '/image',
@@ -46,6 +46,11 @@ def image_analyzation_endpoint(file: bytes = File(...), response_format: str = '
             img = rotate_image(img)
         except Exception as e:
             pass
+        img = cv2.resize(img, None, fx=3, fy=3, interpolation= cv2.INTER_AREA)
+        kernel = np.array([[0, -1, 0],
+                           [-1, 5, -1],
+                           [0, -1, 0]])
+        img = cv2.filter2D(src=img, ddepth=-1, kernel=kernel)
         img = cv2.cvtColor(img, cv2.COLOR_BGR2GRAY)
         img = cv2.GaussianBlur(img, (5, 5), 0)
         text = pytesseract.image_to_string(img, lang='eng')
@@ -59,7 +64,7 @@ def image_analyzation_endpoint(file: bytes = File(...), response_format: str = '
     except Exception as e:
         print(e)
         return ImageAnalyzationResponseModel(status="failed", text=e, format=response_format)
-    
+
     
 @analyzation_namespace.post(
     '/text-area',
@@ -75,3 +80,7 @@ def image_analyzation_endpoint(file: bytes = File(...)):
     img = detect_text_areas(img)
     res, im_png = cv2.imencode(".png", img)
     return StreamingResponse(io.BytesIO(im_png.tobytes()), media_type="image/png")
+
+
+
+

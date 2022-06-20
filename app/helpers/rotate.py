@@ -5,7 +5,7 @@ import imutils
 import os
 
 if os.name == 'nt':
-    pytesseract.pytesseract.tesseract_cmd = r'C:\Users\geserp\Anaconda3\Library\bin\tesseract.exe'
+    pytesseract.pytesseract.tesseract_cmd = 'C:/Program Files (x86)/Tesseract-OCR/tesseract.exe'
 
 
 def rotate_image(image):
