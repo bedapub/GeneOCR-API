@@ -11,4 +11,4 @@ imutils==0.5.4
 tensorflow==2.9.1
 tensorflow-hub==0.12.0
 python-multipart==0.0.5
-Levenshtein=0.18.1
+Levenshtein==0.18.1
